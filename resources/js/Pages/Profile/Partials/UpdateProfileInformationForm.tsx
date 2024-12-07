@@ -2,14 +2,14 @@ import { router } from '@inertiajs/core';
 import { Link, useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import useRoute from '@/Hooks/useRoute';
-import ActionMessage from '@/Components/ActionMessage';
-import FormSection from '@/Components/FormSection';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import SecondaryButton from '@/Components/SecondaryButton';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { User } from '@/types';
 import useTypedPage from '@/Hooks/useTypedPage';
 
@@ -78,136 +78,145 @@ export default function UpdateProfileInformationForm({ user }: Props) {
   }
 
   return (
-    <FormSection
-      onSubmit={updateProfileInformation}
-      title={'Profile Information'}
-      description={`Update your account's profile information and email address.`}
-      renderActions={() => (
-        <>
-          <ActionMessage on={form.recentlySuccessful} className="mr-3">
-            Saved.
-          </ActionMessage>
-
-          <PrimaryButton
-            className={classNames({ 'opacity-25': form.processing })}
-            disabled={form.processing}
-          >
-            Save
-          </PrimaryButton>
-        </>
-      )}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      {/* <!-- Profile Photo --> */}
-      {page.props.jetstream.managesProfilePhotos ? (
-        <div className="col-span-6 sm:col-span-4">
-          {/* <!-- Profile Photo File Input --> */}
-          <input
-            type="file"
-            className="hidden"
-            ref={photoRef}
-            onChange={updatePhotoPreview}
-          />
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Information</CardTitle>
+          <CardDescription>Update your account's profile information and email address.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={e => { e.preventDefault(); updateProfileInformation(); }}>
+            {page.props.jetstream.managesProfilePhotos && (
+              <div className="space-y-4">
+                <Label>Profile Photo</Label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="file"
+                    className="hidden"
+                    ref={photoRef}
+                    onChange={updatePhotoPreview}
+                  />
 
-          <InputLabel htmlFor="photo" value="Photo" />
+                  {photoPreview ? (
+                    <Avatar className="w-20 h-20">
+                      <AvatarImage
+                        src={photoPreview}
+                        alt={user.name}
+                      />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <Avatar className="w-20 h-20">
+                      <AvatarImage
+                        src={user.profile_photo_url}
+                        alt={user.name}
+                      />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  )}
 
-          {photoPreview ? (
-            // <!-- New Profile Photo Preview -->
-            <div className="mt-2">
-              <span
-                className="block rounded-full w-20 h-20"
-                style={{
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center center',
-                  backgroundImage: `url('${photoPreview}')`,
-                }}
-              ></span>
-            </div>
-          ) : (
-            // <!-- Current Profile Photo -->
-            <div className="mt-2">
-              <img
-                src={user.profile_photo_url}
-                alt={user.name}
-                className="rounded-full h-20 w-20 object-cover"
-              />
-            </div>
-          )}
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={selectNewPhoto}
+                    >
+                      Select New Photo
+                    </Button>
 
-          <SecondaryButton
-            className="mt-2 mr-2"
-            type="button"
-            onClick={selectNewPhoto}
-          >
-            Select A New Photo
-          </SecondaryButton>
-
-          {user.profile_photo_path ? (
-            <SecondaryButton
-              type="button"
-              className="mt-2"
-              onClick={deletePhoto}
-            >
-              Remove Photo
-            </SecondaryButton>
-          ) : null}
-
-          <InputError message={form.errors.photo} className="mt-2" />
-        </div>
-      ) : null}
-
-      {/* <!-- Name --> */}
-      <div className="col-span-6 sm:col-span-4">
-        <InputLabel htmlFor="name" value="Name" />
-        <TextInput
-          id="name"
-          type="text"
-          className="mt-1 block w-full"
-          value={form.data.name}
-          onChange={e => form.setData('name', e.currentTarget.value)}
-          autoComplete="name"
-        />
-        <InputError message={form.errors.name} className="mt-2" />
-      </div>
-
-      {/* <!-- Email --> */}
-      <div className="col-span-6 sm:col-span-4">
-        <InputLabel htmlFor="email" value="Email" />
-        <TextInput
-          id="email"
-          type="email"
-          className="mt-1 block w-full"
-          value={form.data.email}
-          onChange={e => form.setData('email', e.currentTarget.value)}
-        />
-        <InputError message={form.errors.email} className="mt-2" />
-
-        {page.props.jetstream.hasEmailVerification &&
-        user.email_verified_at === null ? (
-          <div>
-            <p className="text-sm mt-2">
-              Your email address is unverified.
-              <Link
-                href={route('verification.send')}
-                method="post"
-                as="button"
-                className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                onClick={e => {
-                  e.preventDefault();
-                  setVerificationLinkSent(true);
-                }}
-              >
-                Click here to re-send the verification email.
-              </Link>
-            </p>
-            {verificationLinkSent && (
-              <div className="mt-2 font-medium text-sm text-green-600">
-                A new verification link has been sent to your email address.
+                    {user.profile_photo_path && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={deletePhoto}
+                      >
+                        Remove Photo
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
-          </div>
-        ) : null}
-      </div>
-    </FormSection>
+
+            <div className="mt-6 space-y-4">
+              <div>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={form.data.name}
+                  onChange={e => form.setData('name', e.currentTarget.value)}
+                  autoComplete="name"
+                />
+                {form.errors.name && (
+                  <p className="mt-2 text-sm text-red-600">{form.errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={form.data.email}
+                  onChange={e => form.setData('email', e.currentTarget.value)}
+                />
+                {form.errors.email && (
+                  <p className="mt-2 text-sm text-red-600">{form.errors.email}</p>
+                )}
+
+                {page.props.jetstream.hasEmailVerification && user.email_verified_at === null && (
+                  <div className="mt-4">
+                    <Alert>
+                      <AlertDescription>
+                        Your email address is unverified.
+                        <Link
+                          href={route('verification.send')}
+                          method="post"
+                          as="button"
+                          className="ml-2 text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          onClick={e => {
+                            e.preventDefault();
+                            setVerificationLinkSent(true);
+                          }}
+                        >
+                          Click here to re-send the verification email.
+                        </Link>
+                      </AlertDescription>
+                    </Alert>
+
+                    {verificationLinkSent && (
+                      <Alert className="mt-4" variant="default">
+                        <AlertDescription>
+                          A new verification link has been sent to your email address.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6">
+              {form.recentlySuccessful && (
+                <p className="mr-3 text-sm text-green-600">Saved.</p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={form.processing}
+                className={classNames({ 'opacity-25': form.processing })}
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

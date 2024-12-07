@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\ClearResponseCache;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Joaopaulolndev\FilamentGeneralSettings\Models\GeneralSetting;
 
 class GeneralSettings extends Model
 {
+    // use ClearResponseCache;
     use HasFactory;
 
     protected $fillable = [
@@ -40,7 +41,13 @@ class GeneralSettings extends Model
         'school_portal_favicon',
         'school_portal_title',
         'school_portal_description',
-        'features'
+        'enable_clearance_check',
+        'enable_signatures',
+        'enable_public_transactions',
+        'enable_qr_codes',
+        'enable_support_page',
+        'features',
+        'curriculum_year',
     ];
 
     protected $casts = [
@@ -55,8 +62,14 @@ class GeneralSettings extends Model
         'school_portal_maintenance' => 'boolean',
         'semester' => 'integer',
         'enrollment_courses' => 'array',
-        'features' => 'json',
+        'enable_signatures' => 'boolean',
+        'enable_public_transactions' => 'boolean',
+        'enable_qr_codes' => 'boolean',
+        'enable_support_page' => 'boolean',
+        'features' => 'array',
+        'curriculum_year' => 'string',
     ];
+
     protected static function boot()
     {
         parent::boot();
@@ -65,41 +78,34 @@ class GeneralSettings extends Model
             self::clearCache();
         });
     }
-    public static function getInstance()
-    {
-        return Cache::rememberForever('general_settings', function () {
-            return self::firstOrCreate();
-        });
-    }
-
-    public static function get($key = null, $default = null)
-    {
-        $settings = Cache::rememberForever('general_settings', function () {
-            return self::first();
-        });
-
-        if (!$settings) {
-            return $default;
-        }
-
-        if ($key === null) {
-            return $settings;
-        }
-
-        return $settings->$key ?? $default;
-    }
 
     public static function clearCache()
     {
         Cache::forget('general_settings');
     }
+
     public function getSchoolYear(): string
     {
-        return $this->school_starting_date->format('Y') . ' - ' . $this->school_ending_date->format('Y');
+        return $this->getSchoolYearStarting().
+            '-'.
+            $this->getSchoolYearEnding();
     }
+
+    public function getSchoolYearStarting(): string
+    {
+        return $this->school_starting_date->format('Y');
+    }
+
+    public function getSchoolYearEnding(): string
+    {
+        return $this->school_ending_date->format('Y');
+    }
+
     public function getSchoolYearString(): string
     {
-        return $this->school_starting_date->format('Y') . '-' . $this->school_ending_date->format('Y');
+        return $this->getSchoolYearStarting().
+            ' - '.
+            $this->getSchoolYearEnding();
     }
 
     public function getSemester(): string
@@ -109,18 +115,5 @@ class GeneralSettings extends Model
             2 => '2nd Semester',
             default => '1st Semester',
         };
-    }
-
-    public function getSchoolLogoUrl(): string
-    {
-        if ($this->school_portal_logo) {
-            return Storage::disk('local')->url($this->school_portal_logo);
-        }
-        return asset('images/logo.png');
-    }
-
-    public function isTuitionFeesPageEnabled()
-    {
-        return $this->features['student_features']['enable_tuition_fees_page'];
     }
 }

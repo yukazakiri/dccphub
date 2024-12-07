@@ -1,13 +1,22 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm';
 import LogoutOtherBrowserSessions from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm';
 import useTypedPage from '@/Hooks/useTypedPage';
-import SectionBorder from '@/Components/SectionBorder';
-import AppLayout from '@/Layouts/AppLayout';
+import { Card } from "@/components/ui/card";
+import { Head } from '@inertiajs/react';
+import { SidebarDemo } from '@/Components/Sidebar/SidebarDemo';
 import { Session } from '@/types';
+import { Button } from "@/components/ui/button";
+import {
+  RiUserLine,
+  RiShieldLine,
+  RiComputerLine,
+  RiAlertLine,
+} from "react-icons/ri";
 
 interface Props {
   sessions: Session[];
@@ -19,59 +28,122 @@ export default function Show({
   confirmsTwoFactorAuthentication,
 }: Props) {
   const page = useTypedPage();
+  const [activeSection, setActiveSection] = React.useState('profile');
 
-  return (
-    <AppLayout
-      title={'Profile'}
-      renderHeader={() => (
-        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-          Profile
-        </h2>
-      )}
-    >
-      <div>
-        <div className="py-10 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          {page.props.jetstream.canUpdateProfileInformation ? (
-            <div>
-              <UpdateProfileInformationForm user={page.props.auth.user!} />
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        staggerChildren: 0.1
+      }
+    }
+  };
 
-              <SectionBorder />
-            </div>
-          ) : null}
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.3 }
+    }
+  };
 
-          {page.props.jetstream.canUpdatePassword ? (
-            <div className="mt-10 sm:mt-0">
-              <UpdatePasswordForm />
+  const sections = [
+    { id: 'profile', label: 'Profile Information', icon: RiUserLine },
+    { id: 'security', label: 'Security Settings', icon: RiShieldLine },
+    { id: 'sessions', label: 'Browser Sessions', icon: RiComputerLine },
+    { id: 'danger', label: 'Danger Zone', icon: RiAlertLine },
+  ];
 
-              <SectionBorder />
-            </div>
-          ) : null}
-
-          {page.props.jetstream.canManageTwoFactorAuthentication ? (
-            <div className="mt-10 sm:mt-0">
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'profile':
+        return page.props.jetstream.canUpdateProfileInformation && (
+          <UpdateProfileInformationForm user={page.props.auth.user!} />
+        );
+      case 'security':
+        return (
+          <div className="space-y-6">
+            {page.props.jetstream.canUpdatePassword && <UpdatePasswordForm />}
+            {page.props.jetstream.canManageTwoFactorAuthentication && (
               <TwoFactorAuthenticationForm
                 requiresConfirmation={confirmsTwoFactorAuthentication}
               />
-
-              <SectionBorder />
-            </div>
-          ) : null}
-
-          <div className="mt-10 sm:mt-0">
-            <LogoutOtherBrowserSessions sessions={sessions} />
+            )}
           </div>
+        );
+      case 'sessions':
+        return <LogoutOtherBrowserSessions sessions={sessions} />;
+      case 'danger':
+        return page.props.jetstream.hasAccountDeletionFeatures && <DeleteUserForm />;
+      default:
+        return null;
+    }
+  };
 
-          {page.props.jetstream.hasAccountDeletionFeatures ? (
-            <>
-              <SectionBorder />
+  return (
+    <>
+      <Head title="Profile" />
+      <div className="bg-background">
+        <SidebarDemo>
+          <div className="flex flex-col flex-1 w-full h-full gap-4 p-2 bg-white border md:p-10 rounded-tl-2xl border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between"
+            >
+              <h2 className="text-xl font-semibold leading-tight text-foreground">
+                Profile Settings
+              </h2>
+            </motion.div>
 
-              <div className="mt-10 sm:mt-0">
-                <DeleteUserForm />
-              </div>
-            </>
-          ) : null}
-        </div>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col gap-6 md:flex-row"
+            >
+              {/* Profile Navigation Sidebar */}
+              <motion.div
+                variants={itemVariants}
+                className="w-full md:w-64 shrink-0"
+              >
+                <Card className="p-4">
+                  <div className="flex flex-col space-y-2">
+                    {sections.map((section) => {
+                      const Icon = section.icon;
+                      return (
+                        <Button
+                          key={section.id}
+                          variant={activeSection === section.id ? "default" : "ghost"}
+                          className="justify-start"
+                          onClick={() => setActiveSection(section.id)}
+                        >
+                          <Icon className="w-4 h-4 mr-2" />
+                          {section.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </Card>
+              </motion.div>
+
+              {/* Content Area */}
+              <motion.div
+                variants={itemVariants}
+                className="flex-1"
+              >
+                <Card className="p-6">
+                  {renderContent()}
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </SidebarDemo>
       </div>
-    </AppLayout>
+    </>
   );
 }

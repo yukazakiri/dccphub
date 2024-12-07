@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CoursesController;
+use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\GradesController;
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -20,6 +24,9 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+    Route::get('/grades', [GradesController::class, 'index'])->name('grades.index');
 });
 
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])

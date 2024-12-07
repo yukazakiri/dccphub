@@ -285,4 +285,9 @@ public function hasRequestedEnrollment()
                 ->where('school_year', GeneralSettings::first()->getSchoolYear())
                 ->exists();
 }
+
+    public function getStudentChecklistAttribute()
+    {
+        return $this->subjectEnrolled()->get();
+    }
 }

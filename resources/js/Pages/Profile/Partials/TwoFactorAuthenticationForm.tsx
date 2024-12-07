@@ -3,14 +3,14 @@ import { useForm } from '@inertiajs/react';
 import axios from 'axios';
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import ActionSection from '@/Components/ActionSection';
-import ConfirmsPassword from '@/Components/ConfirmsPassword';
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Shield, Key, RefreshCw, Eye } from "lucide-react";
 import useTypedPage from '@/Hooks/useTypedPage';
 
 interface Props {
@@ -106,188 +106,154 @@ export default function TwoFactorAuthenticationForm({
   }
 
   return (
-    <ActionSection
-      title={'Two Factor Authentication'}
-      description={
-        'Add additional security to your account using two factor authentication.'
-      }
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      {(() => {
-        if (twoFactorEnabled && !confirming) {
-          return (
-            <h3 className="text-lg font-medium text-gray-900">
-              You have enabled two factor authentication.
-            </h3>
-          );
-        }
-        if (confirming) {
-          return (
-            <h3 className="text-lg font-medium text-gray-900">
-              Finish enabling two factor authentication.
-            </h3>
-          );
-        }
-        return (
-          <h3 className="text-lg font-medium text-gray-900">
-            You have not enabled two factor authentication.
-          </h3>
-        );
-      })()}
-
-      <div className="mt-3 max-w-xl text-sm text-gray-600">
-        <p>
-          When two factor authentication is enabled, you will be prompted for a
-          secure, random token during authentication. You may retrieve this
-          token from your phone's Google Authenticator application.
-        </p>
-      </div>
-
-      {twoFactorEnabled || confirming ? (
-        <div>
-          {qrCode ? (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            Two Factor Authentication
+          </CardTitle>
+          <CardDescription>
+            Add additional security to your account using two factor authentication.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {twoFactorEnabled || confirming ? (
             <div>
-              <div className="mt-4 max-w-xl text-sm text-gray-600">
-                {confirming ? (
-                  <p className="font-semibold">
-                    To finish enabling two factor authentication, scan the
-                    following QR code using your phone's authenticator
-                    application or enter the setup key and provide the generated
-                    OTP code.
-                  </p>
-                ) : (
-                  <p>
-                    Two factor authentication is now enabled. Scan the following
-                    QR code using your phone's authenticator application or
-                    enter the setup key.
-                  </p>
+              {confirming ? (
+                <div className="space-y-4">
+                  {qrCode && (
+                    <div className="max-w-xl mt-4 text-sm text-gray-600">
+                      <p className="font-semibold">
+                        Two factor authentication is now enabled. Scan the following QR code using your phone's authenticator application.
+                      </p>
+                      <div className="mt-4" dangerouslySetInnerHTML={{ __html: qrCode }}></div>
+                    </div>
+                  )}
+
+                  {setupKey && (
+                    <div className="max-w-xl mt-4 text-sm text-gray-600">
+                      <p className="font-semibold">
+                        Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.
+                      </p>
+                      <div className="mt-4">
+                        <Input
+                          readOnly
+                          value={setupKey}
+                          className="font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-4">
+                    <Input
+                      type="text"
+                      placeholder="Code"
+                      value={confirmationForm.data.code}
+                      onChange={e => confirmationForm.setData('code', e.currentTarget.value)}
+                    />
+                    {confirmationForm.errors.code && (
+                      <Alert variant="destructive" className="mt-2">
+                        <AlertDescription>{confirmationForm.errors.code}</AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+
+                  <div className="flex mt-4 space-x-2">
+                    <Button
+                      onClick={confirmTwoFactorAuthentication}
+                      disabled={enabling}
+                    >
+                      Confirm
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setConfirming(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
+              {recoveryCodes.length > 0 && !confirming ? (
+                <div>
+                  <div className="max-w-xl mt-4 text-sm text-gray-600">
+                    <p className="font-semibold">
+                      Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.
+                    </p>
+                  </div>
+
+                  <ScrollArea className="h-48 mt-4">
+                    <div className="grid gap-1 p-4 font-mono text-sm rounded-lg bg-muted">
+                      {recoveryCodes.map(code => (
+                        <div key={code}>{code}</div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              ) : null}
+
+              <div className="mt-5 space-x-2">
+                {!confirming && (
+                  <>
+                    {recoveryCodes.length > 0 ? (
+                      <Button
+                        variant="outline"
+                        onClick={regenerateRecoveryCodes}
+                        className="flex items-center gap-2"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        Regenerate Recovery Codes
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onClick={showRecoveryCodes}
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Show Recovery Codes
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="destructive"
+                      onClick={disableTwoFactorAuthentication}
+                      disabled={disabling}
+                      className="flex items-center gap-2"
+                    >
+                      Disable
+                    </Button>
+                  </>
                 )}
               </div>
-
-              <div
-                className="mt-4"
-                dangerouslySetInnerHTML={{ __html: qrCode || '' }}
-              />
-
-              {setupKey && (
-                <div className="mt-4 max-w-xl text-sm text-gray-600">
-                  <p className="font-semibold">
-                    Setup Key:{' '}
-                    <span
-                      dangerouslySetInnerHTML={{ __html: setupKey || '' }}
-                    />
-                  </p>
-                </div>
-              )}
-
-              {confirming && (
-                <div className="mt-4">
-                  <InputLabel htmlFor="code" value="Code" />
-
-                  <TextInput
-                    id="code"
-                    type="text"
-                    name="code"
-                    className="block mt-1 w-1/2"
-                    inputMode="numeric"
-                    autoFocus={true}
-                    autoComplete="one-time-code"
-                    value={confirmationForm.data.code}
-                    onChange={e =>
-                      confirmationForm.setData('code', e.currentTarget.value)
-                    }
-                  />
-
-                  <InputError
-                    message={confirmationForm.errors.code}
-                    className="mt-2"
-                  />
-                </div>
-              )}
             </div>
-          ) : null}
-
-          {recoveryCodes.length > 0 && !confirming ? (
+          ) : (
             <div>
-              <div className="mt-4 max-w-xl text-sm text-gray-600">
-                <p className="font-semibold">
-                  Store these recovery codes in a secure password manager. They
-                  can be used to recover access to your account if your two
-                  factor authentication device is lost.
-                </p>
+              <div className="max-w-xl mt-3 text-sm text-gray-600">
+                When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone's Google Authenticator application.
               </div>
 
-              <div className="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 rounded-lg">
-                {recoveryCodes.map(code => (
-                  <div key={code}>{code}</div>
-                ))}
+              <div className="mt-4">
+                <Button
+                  onClick={enableTwoFactorAuthentication}
+                  disabled={enabling}
+                  className="flex items-center gap-2"
+                >
+                  <Key className="w-4 h-4" />
+                  Enable
+                </Button>
               </div>
             </div>
-          ) : null}
-        </div>
-      ) : null}
-
-      <div className="mt-5">
-        {twoFactorEnabled || confirming ? (
-          <div>
-            {confirming ? (
-              <ConfirmsPassword onConfirm={confirmTwoFactorAuthentication}>
-                <PrimaryButton
-                  className={classNames('mr-3', { 'opacity-25': enabling })}
-                  disabled={enabling}
-                >
-                  Confirm
-                </PrimaryButton>
-              </ConfirmsPassword>
-            ) : null}
-            {recoveryCodes.length > 0 && !confirming ? (
-              <ConfirmsPassword onConfirm={regenerateRecoveryCodes}>
-                <SecondaryButton className="mr-3">
-                  Regenerate Recovery Codes
-                </SecondaryButton>
-              </ConfirmsPassword>
-            ) : null}
-            {recoveryCodes.length === 0 && !confirming ? (
-              <ConfirmsPassword onConfirm={showRecoveryCodes}>
-                <SecondaryButton className="mr-3">
-                  Show Recovery Codes
-                </SecondaryButton>
-              </ConfirmsPassword>
-            ) : null}
-
-            {confirming ? (
-              <ConfirmsPassword onConfirm={disableTwoFactorAuthentication}>
-                <SecondaryButton
-                  className={classNames('mr-3', { 'opacity-25': disabling })}
-                  disabled={disabling}
-                >
-                  Cancel
-                </SecondaryButton>
-              </ConfirmsPassword>
-            ) : (
-              <ConfirmsPassword onConfirm={disableTwoFactorAuthentication}>
-                <DangerButton
-                  className={classNames({ 'opacity-25': disabling })}
-                  disabled={disabling}
-                >
-                  Disable
-                </DangerButton>
-              </ConfirmsPassword>
-            )}
-          </div>
-        ) : (
-          <div>
-            <ConfirmsPassword onConfirm={enableTwoFactorAuthentication}>
-              <PrimaryButton
-                type="button"
-                className={classNames({ 'opacity-25': enabling })}
-                disabled={enabling}
-              >
-                Enable
-              </PrimaryButton>
-            </ConfirmsPassword>
-          </div>
-        )}
-      </div>
-    </ActionSection>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
+import { ThemeToggle } from '@/Components/ThemeToggle';
 import {
   RiDashboardLine,
   RiBookOpenLine,
@@ -43,17 +44,17 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
     },
     {
       label: "Courses",
-      href: "#",
+      href: route('courses.index'),
       icon: Icons.Book,
     },
     {
       label: "Schedule",
-      href: "#",
+      href: route('schedule.index'),
       icon: Icons.Calendar,
     },
     {
       label: "Grades",
-      href: "#",
+      href: route('grades.index'),
       icon: Icons.Graduation,
     },
     {
@@ -92,6 +93,9 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between px-2 py-1">
+              <ThemeToggle />
+            </div>
             <SidebarLink
               link={{
                 label: page.props.auth.user?.name || "",

@@ -21,6 +21,7 @@ import {
   RiGroupLine,
   RiCheckboxCircleLine,
 } from 'react-icons/ri';
+import { DashboardProps } from '@/types/dashboard';
 
 const container = {
   hidden: { opacity: 0 },
@@ -49,41 +50,55 @@ const Icons = {
   Checkbox: RiCheckboxCircleLine,
 };
 
-export default function Dashboard({ auth, enrollments, schedule, tuition }) {
+export default function Dashboard({
+  auth,
+  current_enrollment,
+  schedule,
+  academic_info,
+  financial,
+  recent_posts
+}: DashboardProps) {
+
+  // Add this to debug in browser
+  console.log({ auth, current_enrollment, schedule, academic_info, financial, recent_posts });
+
   const stats = [
     {
       title: "Current Semester",
-      value: `${enrollments?.semester || '1st'} Semester`,
+      value: academic_info ? `${academic_info.semester} Semester` : 'N/A',
       icon: Icons.Calendar,
-      description: enrollments?.school_year || '2023-2024',
-      change: "Current",
-      changeType: "neutral"
+      description: academic_info ? academic_info.school_year : 'N/A',
+      change: `${academic_info.course} - ${academic_info.year_standing}`,
+      changeType: "neutral" as const
     },
     {
       title: "Enrolled Subjects",
-      value: enrollments?.SubjectsEnrolled?.length || '0',
+      value: current_enrollment?.SubjectsEnrolled?.length.toString() ?? '0',
       icon: Icons.Book,
       description: "Total subjects this semester",
       change: "Active",
-      changeType: "positive"
+      changeType: "positive" as const
     },
     {
       title: "Next Class",
-      value: schedule?.next_class?.subject || 'No classes',
+      value: schedule?.next_class?.subject ?? 'No classes',
       icon: Icons.Time,
-      description: schedule?.next_class?.time || 'N/A',
-      change: schedule?.next_class?.room || 'N/A',
-      changeType: "neutral"
+      description: schedule?.next_class?.time ?? 'N/A',
+      change: schedule?.next_class?.room ?? 'N/A',
+      changeType: "neutral" as const
     },
     {
       title: "Balance",
-      value: `₱${tuition?.totalbalance || '0'}`,
+      value: financial?.current_tuition ? `₱${financial.current_tuition.balance.toLocaleString()}` : '₱0',
       icon: Icons.Money,
       description: "Remaining balance",
-      change: tuition?.payment_method || 'Not set',
-      changeType: tuition?.totalbalance > 0 ? "negative" : "positive"
+      change: financial?.current_tuition?.payment_method || 'Not set',
+      changeType: financial?.current_tuition?.balance > 0 ? "negative" : "positive"
     }
   ];
+
+  // Update today's classes to use the new schedule structure
+  const todayClasses = schedule?.today || [];
 
   return (
     <>
@@ -162,8 +177,8 @@ export default function Dashboard({ auth, enrollments, schedule, tuition }) {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {schedule?.today_classes?.length > 0 ? (
-                        schedule.today_classes.map((class_, index) => (
+                      {todayClasses.length > 0 ? (
+                        todayClasses.map((class_, index) => (
                           <div key={index} className="flex items-center p-3 border rounded-lg">
                             <div className="flex-1">
                               <p className="font-medium">{class_.subject}</p>
@@ -188,49 +203,34 @@ export default function Dashboard({ auth, enrollments, schedule, tuition }) {
               <motion.div variants={item} className="lg:col-span-3">
                 <Card className="h-full">
                   <CardHeader>
-                    <CardTitle>Recent Notifications</CardTitle>
+                    <CardTitle>Recent Announcements</CardTitle>
                     <CardDescription>
-                      Important updates and announcements
+                      Latest updates from your classes
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {/* Replace with actual notifications */}
-                      {[
-                        {
-                          title: 'Tuition Payment Due',
-                          message: 'Your next payment is due next week',
-                          time: '2h ago',
-                          type: 'warning'
-                        },
-                        {
-                          title: 'New Course Material',
-                          message: 'New materials uploaded for Mathematics',
-                          time: '5h ago',
-                          type: 'info'
-                        },
-                        {
-                          title: 'Grade Posted',
-                          message: 'New grades posted for Programming 101',
-                          time: '1d ago',
-                          type: 'success'
-                        }
-                      ].map((notification, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-4 p-3 border rounded-lg"
-                        >
-                          <div className="flex-1">
-                            <p className="font-medium">{notification.title}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {notification.message}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {notification.time}
-                            </p>
+                      {recent_posts?.length > 0 ? (
+                        recent_posts.map((post, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-4 p-3 border rounded-lg"
+                          >
+                            <div className="flex-1">
+                              <p className="font-medium">{post.title}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {post.content}
+                              </p>
+                              <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                                <span>{post.user.name} • {post.class.name}</span>
+                                <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No announcements available</p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

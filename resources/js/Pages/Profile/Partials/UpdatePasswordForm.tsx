@@ -1,13 +1,13 @@
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { useRef } from 'react';
+import { motion } from 'framer-motion';
 import useRoute from '@/Hooks/useRoute';
-import ActionMessage from '@/Components/ActionMessage';
-import FormSection from '@/Components/FormSection';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function UpdatePasswordForm() {
   const route = useRoute();
@@ -39,76 +39,85 @@ export default function UpdatePasswordForm() {
   }
 
   return (
-    <FormSection
-      onSubmit={updatePassword}
-      title={'Update Password'}
-      description={
-        'Ensure your account is using a long, random password to stay secure.'
-      }
-      renderActions={() => (
-        <>
-          <ActionMessage on={form.recentlySuccessful} className="mr-3">
-            Saved.
-          </ActionMessage>
-
-          <PrimaryButton
-            className={classNames({ 'opacity-25': form.processing })}
-            disabled={form.processing}
-          >
-            Save
-          </PrimaryButton>
-        </>
-      )}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="col-span-6 sm:col-span-4">
-        <InputLabel htmlFor="current_password">Current Password</InputLabel>
-        <TextInput
-          id="current_password"
-          type="password"
-          className="mt-1 block w-full"
-          ref={currentPasswordRef}
-          value={form.data.current_password}
-          onChange={e =>
-            form.setData('current_password', e.currentTarget.value)
-          }
-          autoComplete="current-password"
-        />
-        <InputError message={form.errors.current_password} className="mt-2" />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Update Password</CardTitle>
+          <CardDescription>
+            Ensure your account is using a long, random password to stay secure.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={e => { e.preventDefault(); updatePassword(); }} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="current_password">Current Password</Label>
+              <Input
+                id="current_password"
+                type="password"
+                ref={currentPasswordRef}
+                value={form.data.current_password}
+                onChange={e => form.setData('current_password', e.currentTarget.value)}
+                autoComplete="current-password"
+              />
+              {form.errors.current_password && (
+                <Alert variant="destructive">
+                  <AlertDescription>{form.errors.current_password}</AlertDescription>
+                </Alert>
+              )}
+            </div>
 
-      <div className="col-span-6 sm:col-span-4">
-        <InputLabel htmlFor="password">New Password</InputLabel>
-        <TextInput
-          id="password"
-          type="password"
-          className="mt-1 block w-full"
-          value={form.data.password}
-          onChange={e => form.setData('password', e.currentTarget.value)}
-          autoComplete="new-password"
-          ref={passwordRef}
-        />
-        <InputError message={form.errors.password} className="mt-2" />
-      </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">New Password</Label>
+              <Input
+                id="password"
+                type="password"
+                ref={passwordRef}
+                value={form.data.password}
+                onChange={e => form.setData('password', e.currentTarget.value)}
+                autoComplete="new-password"
+              />
+              {form.errors.password && (
+                <Alert variant="destructive">
+                  <AlertDescription>{form.errors.password}</AlertDescription>
+                </Alert>
+              )}
+            </div>
 
-      <div className="col-span-6 sm:col-span-4">
-        <InputLabel htmlFor="password_confirmation">
-          Confirm Password
-        </InputLabel>
-        <TextInput
-          id="password_confirmation"
-          type="password"
-          className="mt-1 block w-full"
-          value={form.data.password_confirmation}
-          onChange={e =>
-            form.setData('password_confirmation', e.currentTarget.value)
-          }
-          autoComplete="new-password"
-        />
-        <InputError
-          message={form.errors.password_confirmation}
-          className="mt-2"
-        />
-      </div>
-    </FormSection>
+            <div className="space-y-2">
+              <Label htmlFor="password_confirmation">Confirm Password</Label>
+              <Input
+                id="password_confirmation"
+                type="password"
+                value={form.data.password_confirmation}
+                onChange={e => form.setData('password_confirmation', e.currentTarget.value)}
+                autoComplete="new-password"
+              />
+              {form.errors.password_confirmation && (
+                <Alert variant="destructive">
+                  <AlertDescription>{form.errors.password_confirmation}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end">
+              {form.recentlySuccessful && (
+                <span className="mr-3 text-sm text-green-600">Saved.</span>
+              )}
+              <Button
+                type="submit"
+                disabled={form.processing}
+                className={classNames({ 'opacity-25': form.processing })}
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

@@ -12,6 +12,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Team } from '@/types';
 import { ThemeToggle } from '@/Components/ThemeToggle';
+import { ThemeProvider } from '@/Components/ThemeProvider';
 
 interface Props {
   title: string;
@@ -24,10 +25,12 @@ export default function AppLayout({
   children,
 }: PropsWithChildren<Props>) {
   return (
-    <div className="min-h-screen bg-background">
-      <Head title={title} />
-      <Banner />
-      {children}
-    </div>
+    <ThemeProvider defaultTheme="system" storageKey="ui-theme">
+      <div className="h-screen bg-background">
+        <Head title={title} />
+        <Banner />
+        {children}
+      </div>
+    </ThemeProvider>
   );
 }
