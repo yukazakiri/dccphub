@@ -17,7 +17,7 @@ use Coderflex\LaravelTicket\Contracts\CanUseTickets;
 use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
 {
@@ -28,7 +28,7 @@ class User extends Authenticatable
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
-
+    use TwoFactorAuthenticatable;
     use Notifiable;
     // use SetsProfilePhotoFromUrl;
     // use HasRoles;

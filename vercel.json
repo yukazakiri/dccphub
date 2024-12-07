@@ -1,0 +1,47 @@
+{
+    "version": 2,
+    "functions": {
+        "api/*.php": {
+            "runtime": "vercel-php@0.7.3",
+            "memory": 1024,
+            "maxDuration": 10
+        }
+    },
+
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "build": {
+        "env": {
+            "NOW_PHP_DEBUG": "1",
+            "PHP_INI_SCAN_DIR": "/var/task/api"
+        }
+    },
+    "env": {
+        "APP_NAME": "Laravel",
+        "APP_ENV": "production",
+        "APP_KEY": "base64:HX0+8XPVMV9WsYJRWi3DeqrBVMYC3lKbsA1A2vY8t0o=",
+        "APP_DEBUG": "true",
+        "APP_URL": "https://${VERCEL_URL}",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_DRIVER": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "SSR_TEMP_PATH": "/tmp/ssr",
+        "NODE_PATH": "node",
+        "SESSION_DOMAIN": "${SESSION_DOMAIN}",
+        "SESSION_SECURE_COOKIE": "${SESSION_SECURE_COOKIE}",
+        "SANCTUM_STATEFUL_DOMAINS": "${SANCTUM_STATEFUL_DOMAINS}",
+        "SESSION_SAME_SITE": "${SESSION_SAME_SITE}",
+        "DB_CONNECTION": "pgsql",
+        "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin"
+    }
+}

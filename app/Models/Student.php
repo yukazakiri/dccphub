@@ -101,7 +101,7 @@ public function studentPersonal()
 
 public function documentLocation()
 {
-    return $this->belongsTo(DocumentLocation::class);
+    return $this->belongsTo(document_locations::class);
 }
 public function StudentTransactions()
     {

@@ -122,7 +122,7 @@ class Students extends Model
 
     public function DocumentLocation()
     {
-        return $this->belongsTo(DocumentLocations::class, 'document_location_id');
+        return $this->belongsTo(document_locations::class, 'document_location_id');
     }
 
     public function Accounts()
@@ -149,7 +149,7 @@ class Students extends Model
 
     public function personalInfo()
     {
-        return $this->hasOne(StudentsPersonalInfo::class, 'id', 'student_personal_id');
+        return $this->hasOne(StudentPersonal::class, 'id', 'student_personal_id');
     }
 
     public function studentEducationInfo()
@@ -289,5 +289,15 @@ public function hasRequestedEnrollment()
     public function getStudentChecklistAttribute()
     {
         return $this->subjectEnrolled()->get();
+    }
+
+    public function getTotalEnrolledSubjectsAttribute()
+    {
+        return $this->subjectEnrolled()->count();
+    }
+
+    public function getTotalUnitsAttribute()
+    {
+        return $this->subjectEnrolled()->sum('units');
     }
 }

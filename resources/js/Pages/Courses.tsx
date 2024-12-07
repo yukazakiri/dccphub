@@ -1,5 +1,4 @@
 import { Head } from '@inertiajs/react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SidebarDemo } from '@/Components/Sidebar/SidebarDemo';
 import { Card, CardContent } from '@/components/ui/card';
 import React from 'react';

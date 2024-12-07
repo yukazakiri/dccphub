@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\GradesController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -27,6 +28,7 @@ Route::middleware([
     Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
     Route::get('/grades', [GradesController::class, 'index'])->name('grades.index');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 });
 
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])
