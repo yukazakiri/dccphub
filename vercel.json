@@ -12,29 +12,31 @@
         "dest": "/api/index.php"
     }],
     "env": {
-        "APP_NAME": "DCCP Hub",
+        "APP_NAME": "dccp-portal",
         "APP_ENV": "production",
         "APP_KEY": "base64:xrw0KfDcu+1jQC99k9uHLl1AGrevqbcR+KR3pMNcVK4=",
         "APP_DEBUG": "true",
         "APP_URL": "https://dccphub.vercel.app",
+        "ASSET_URL": "https://dccphub.vercel.app",
+        "VITE_APP_URL": "https://dccphub.vercel.app",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp/views",
+        "VIEW_COMPILED_PATH": "/tmp",
         "SSR_TEMP_PATH": "/tmp/ssr",
-        "CACHE_DRIVER": "redis",
+        "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "redis",
+        "SESSION_DRIVER": "cookie",
         "VIEW_CACHE": "false",
 
         "LOG_DEPRECATIONS_CHANNEL": "null",
         "LOG_LEVEL": "debug",
 
-        "BROADCAST_DRIVER": "redis",
+        "BROADCAST_DRIVER": "database",
         "FILESYSTEM_DISK": "local",
-        "QUEUE_CONNECTION": "redis",
+        "QUEUE_CONNECTION": "sync",
         "SESSION_LIFETIME": "120",
 
         "MAIL_MAILER": "smtp",
@@ -51,12 +53,12 @@
         "DB_CONNECTION": "pgsql",
         "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin",
 
-        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
-        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}",
+        "GOOGLE_CLIENT_ID": "757779936642-chnde8hp7gh37qlifosgr6p74mn5bnnv.apps.googleusercontent.com",
+        "GOOGLE_CLIENT_SECRET": "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",
         "GOOGLE_REDIRECT": "https://dccphub.vercel.app/auth/google/callback",
 
-        "FACEBOOK_CLIENT_ID": "${FACEBOOK_CLIENT_ID}",
-        "FACEBOOK_CLIENT_SECRET": "${FACEBOOK_CLIENT_SECRET}",
+        "FACEBOOK_CLIENT_ID": "757779936642-chnde8hp7gh37qlifosgr6p74mn5bnnv.apps.googleusercontent.com",
+        "FACEBOOK_CLIENT_SECRET": "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",
         "FACEBOOK_REDIRECT": "https://dccphub.vercel.app/auth/facebook/callback"
     }
 }
