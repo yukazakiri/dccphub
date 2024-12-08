@@ -34,6 +34,7 @@ import {
   RiDashboardLine,
   RiShieldLine,
 } from "react-icons/ri";
+import ConnectedAccountsForm from '@/Components/ConnectedAccounts';
 
 const container = {
   hidden: { opacity: 0 },
@@ -551,6 +552,9 @@ export default function Show({
                             requiresConfirmation={confirmsTwoFactorAuthentication}
                           />
                         )}
+                        <ConnectedAccountsForm
+                          socialstream={page.props.socialstream}
+                        />
                         <LogoutOtherBrowserSessions sessions={sessions} />
                         {page.props.jetstream.hasAccountDeletionFeatures && (
                           <DeleteUserForm />

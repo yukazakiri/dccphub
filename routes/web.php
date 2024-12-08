@@ -10,6 +10,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\ProfileController;
 
+require __DIR__.'/socialstream.php';
 
 
 Route::get('/', function () {

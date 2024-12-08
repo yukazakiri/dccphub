@@ -165,6 +165,10 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
           </div>
         </SidebarBody>
       </Sidebar>
+      <div className="fixed z-50 bottom-4 right-4">
+
+      <ThemeToggle />
+      </div>
       {children}
     </div>
   );

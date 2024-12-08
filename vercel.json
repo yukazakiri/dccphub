@@ -24,17 +24,17 @@
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "VIEW_COMPILED_PATH": "/tmp/views",
         "SSR_TEMP_PATH": "/tmp/ssr",
-        "CACHE_DRIVER": "array",
+        "CACHE_DRIVER": "redis",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie",
+        "SESSION_DRIVER": "redis",
         "VIEW_CACHE": "false",
 
         "LOG_DEPRECATIONS_CHANNEL": "null",
         "LOG_LEVEL": "debug",
 
-        "BROADCAST_DRIVER": "log",
+        "BROADCAST_DRIVER": "redis",
         "FILESYSTEM_DISK": "local",
-        "QUEUE_CONNECTION": "sync",
+        "QUEUE_CONNECTION": "redis",
         "SESSION_LIFETIME": "120",
 
         "MAIL_MAILER": "smtp",
@@ -49,6 +49,14 @@
         "REDIS_CLIENT": "predis",
         "REDIS_URL": "redis://default:0L8FUZDuFEuVo9GucPMQhiIeKKXMzTyL@redis-15987.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:15987",
         "DB_CONNECTION": "pgsql",
-        "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin"
+        "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin",
+
+        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
+        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}",
+        "GOOGLE_REDIRECT": "https://dccphub.vercel.app/auth/google/callback",
+
+        "FACEBOOK_CLIENT_ID": "${FACEBOOK_CLIENT_ID}",
+        "FACEBOOK_CLIENT_SECRET": "${FACEBOOK_CLIENT_SECRET}",
+        "FACEBOOK_REDIRECT": "https://dccphub.vercel.app/auth/facebook/callback"
     }
 }

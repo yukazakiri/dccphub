@@ -17,21 +17,24 @@ use Coderflex\LaravelTicket\Contracts\CanUseTickets;
 use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+// use JoelButcher\Socialstream\HasConnectedAccounts;
+// use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+// use Laravel\Jetstream\HasProfilePhoto;
+// use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
-    // use HasConnectedAccounts;
+    use HasConnectedAccounts;
     // use HasTickets;
     use HasFactory;
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
-    use TwoFactorAuthenticatable;
     use Notifiable;
-    // use SetsProfilePhotoFromUrl;
-    // use HasRoles;
+    use SetsProfilePhotoFromUrl;
+    use TwoFactorAuthenticatable;
 
     protected $table = "accounts";
     /**
@@ -88,6 +91,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
         ];
     }
+
     /**
      * Get the URL to the user's profile photo.
      */

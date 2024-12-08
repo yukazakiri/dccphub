@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from 'sonner';
+import { usePage } from '@inertiajs/react';
 import { ThemeToggle } from '@/Components/ThemeToggle';
 import { ThemeProvider } from '@/Components/ThemeProvider';
 import logo from '../../../public/android-chrome-512x512.png';
@@ -11,7 +13,57 @@ interface Props {
   title: string;
 }
 
+interface PageProps {
+  errors: Record<string, string | string[]>;
+  jetstream: {
+    flash: any[];
+    canCreateTeams: boolean;
+    canManageTwoFactorAuthentication: boolean;
+    canUpdatePassword: boolean;
+    canUpdateProfileInformation: boolean;
+    hasEmailVerification: boolean;
+    hasAccountDeletionFeatures: boolean;
+    hasApiFeatures: boolean;
+    hasTeamFeatures: boolean;
+    hasTermsAndPrivacyPolicyFeature: boolean;
+    managesProfilePhotos: boolean;
+  };
+  auth: {
+    user: null | any;
+  };
+  [key: string]: any;
+}
+
+interface FlashMessage {
+  message?: string;
+}
+
 export default function AuthenticationLayout({ children, title }: Props) {
+  const { props } = usePage<PageProps>();
+  const { errors, jetstream: { flash } } = props;
+
+  useEffect(() => {
+    // Handle Jetstream/Laravel errors
+    if (errors && Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((error) => {
+        if (Array.isArray(error)) {
+          error.forEach((e) => toast.error(e));
+        } else if (typeof error === 'string') {
+          toast.error(error);
+        }
+      });
+    }
+
+    // Handle flash messages
+    if (flash && flash.length > 0) {
+      flash.forEach((message) => {
+        if (typeof message === 'string') {
+          toast.success(message);
+        }
+      });
+    }
+  }, [errors, flash]);
+
   const features = [
     {
       icon: GraduationCap,
@@ -102,7 +154,7 @@ export default function AuthenticationLayout({ children, title }: Props) {
 
             {/* Footer */}
             <div className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} School Portal. All rights reserved.
+              {new Date().getFullYear()} School Portal. All rights reserved.
             </div>
           </div>
 

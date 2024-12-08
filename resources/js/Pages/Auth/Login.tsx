@@ -1,5 +1,5 @@
 import { Link, useForm, Head, usePage } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import {
   Card,
@@ -21,16 +21,37 @@ import { Checkbox } from "@/components/ui/checkbox";
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { router } from '@inertiajs/react'
+import Socialstream from '@/Components/Socialstream';
+
 interface Props {
   canResetPassword: boolean;
-  status: string;
+  status: string | null;
+  socialstream: {
+    show: boolean;
+    prompt: string;
+    providers: Array<{
+      id: string;
+      name: string;
+      buttonLabel?: string;
+    }>;
+    hasPassword: boolean;
+    connectedAccounts: any[];
+  };
+  errors?: {
+    socialstream?: string;
+  };
 }
 
-export default function Login({ canResetPassword, status }: Props) {
+export default function Login({
+  canResetPassword = false,
+  status,
+  socialstream,
+  errors,
+}: Props) {
   const route = useRoute();
   const { csrf_token } = usePage().props;
   const [step, setStep] = useState<'email' | 'password'>('email');
-  const { data, setData, post, processing, errors, reset } = useForm({
+  const { data, setData, post, processing, reset } = useForm({
     email: '',
     password: '',
     remember: false,
@@ -79,7 +100,7 @@ export default function Login({ canResetPassword, status }: Props) {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (status) {
       toast.info(status);
     }
@@ -231,12 +252,13 @@ export default function Login({ canResetPassword, status }: Props) {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="px-2 bg-background text-muted-foreground">
-                  Or
-                </span>
-              </div>
+
             </div>
+                <Socialstream
+                  providers={socialstream.providers}
+                  show={socialstream.show}
+                  prompt={socialstream.prompt}
+                />
 
             <div className="text-center">
               <Link
