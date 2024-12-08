@@ -25,13 +25,6 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 // Create the request
 $request = Illuminate\Http\Request::capture();
 
-// Add /api prefix only for API routes
-$path = $request->getPathInfo();
-if ($path !== '/' && !str_starts_with($path, '/docs') && !str_starts_with($path, '/api') && !str_starts_with($path, '/up')) {
-    $_SERVER['REQUEST_URI'] = '/api' . $_SERVER['REQUEST_URI'];
-    $request = Illuminate\Http\Request::capture();
-}
-
 // Handle the request
 $response = $kernel->handle($request);
 $response->send();

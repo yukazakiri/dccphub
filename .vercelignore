@@ -1,0 +1,12 @@
+/vendor
+/node_modules
+.env
+.env.*
+*.log
+.git
+.gitignore
+.editorconfig
+.idea
+.vscode
+*.sublime-*
+.DS_Store 

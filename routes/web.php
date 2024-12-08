@@ -28,9 +28,11 @@ Route::middleware([
     Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
     Route::get('/grades', [GradesController::class, 'index'])->name('grades.index');
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    // Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 });
 
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])
     ->middleware(['guest'])
     ->name('login.verify-email');
+
+require __DIR__.'/jetstream.php';

@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Loader2, ArrowLeft, Mail, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   canResetPassword: boolean;
@@ -82,119 +83,137 @@ export default function Login({ canResetPassword, status }: Props) {
     <AuthenticationLayout title="Login">
       <Card className="border-none shadow-lg">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            {step === 'email' ? 'Welcome back' : 'Enter your password'}
-          </CardTitle>
-          <CardDescription className="text-center">
-            {step === 'email' ? (
-              'Please enter your email to continue'
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span className="font-medium">{data.email}</span>
-              </div>
-            )}
-          </CardDescription>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <CardTitle className="text-2xl font-bold text-center">
+              {step === 'email' ? 'Welcome back!' : 'Enter your password'}
+            </CardTitle>
+            <CardDescription className="text-center">
+              {step === 'email' ? (
+                'Sign in to access your student portal'
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span className="font-medium">{data.email}</span>
+                </motion.div>
+              )}
+            </CardDescription>
+          </motion.div>
         </CardHeader>
 
         <form onSubmit={step === 'email' ? handleEmailVerification : handleLogin}>
           <CardContent className="space-y-4">
-            {status && (
-              <Alert variant="default">
-                <AlertDescription>{status}</AlertDescription>
-              </Alert>
-            )}
-
-            {step === 'email' ? (
-              <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
-                <div className="relative">
-                  <Mail className="absolute w-4 h-4 left-3 top-3 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    value={data.email}
-                    onChange={e => setData('email', e.target.value)}
-                    required
-                    autoFocus
-                    autoComplete="username"
-                    placeholder="name@example.com"
-                    className={cn(
-                      "pl-10",
-                      errors.email && "border-red-500 focus-visible:ring-red-500"
-                    )}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setStep('email')}
-                    className="flex items-center h-auto p-0 text-sm font-normal text-muted-foreground hover:text-primary"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Change email
-                  </Button>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+            <AnimatePresence mode="wait">
+              {step === 'email' ? (
+                <motion.div
+                  key="email"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="space-y-2"
+                >
+                  <Label htmlFor="email">Email address</Label>
                   <div className="relative">
-                    <Lock className="absolute w-4 h-4 left-3 top-3 text-muted-foreground" />
+                    <Mail className="absolute w-4 h-4 left-3 top-3 text-muted-foreground" />
                     <Input
-                      id="password"
-                      type="password"
-                      value={data.password}
-                      onChange={e => setData('password', e.target.value)}
+                      id="email"
+                      type="email"
+                      value={data.email}
+                      onChange={e => setData('email', e.target.value)}
                       required
                       autoFocus
-                      autoComplete="current-password"
+                      autoComplete="username"
+                      placeholder="name@example.com"
                       className={cn(
-                        "pl-10",
-                        errors.password && "border-red-500 focus-visible:ring-red-500"
+                        "pl-10 transition-all duration-200",
+                        errors.email && "border-red-500 focus-visible:ring-red-500"
                       )}
                     />
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="remember"
-                      checked={data.remember}
-                      onCheckedChange={(checked) =>
-                        setData('remember', checked === true)
-                      }
-                    />
-                    <Label
-                      htmlFor="remember"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="password"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setStep('email')}
+                      className="flex items-center h-auto p-0 text-sm font-normal text-muted-foreground hover:text-primary"
                     >
-                      Remember me
-                    </Label>
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Change email
+                    </Button>
                   </div>
 
-                  {canResetPassword && (
-                    <Link
-                      href={route('password.request')}
-                      className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
-                    >
-                      Forgot password?
-                    </Link>
-                  )}
-                </div>
-              </div>
-            )}
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute w-4 h-4 left-3 top-3 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type="password"
+                        value={data.password}
+                        onChange={e => setData('password', e.target.value)}
+                        required
+                        autoFocus
+                        autoComplete="current-password"
+                        className={cn(
+                          "pl-10 transition-all duration-200",
+                          errors.password && "border-red-500 focus-visible:ring-red-500"
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="remember"
+                        checked={data.remember}
+                        onCheckedChange={(checked) =>
+                          setData('remember', checked === true)
+                        }
+                      />
+                      <Label
+                        htmlFor="remember"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Remember me
+                      </Label>
+                    </div>
+
+                    {canResetPassword && (
+                      <Link
+                        href={route('password.request')}
+                        className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4">
             <Button
               type="submit"
               disabled={processing}
-              className="w-full"
+              className="w-full transition-all duration-200 hover:scale-[1.02]"
             >
               {processing && (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
