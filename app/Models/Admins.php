@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Rawilk\ProfileFilament\Concerns\TwoFactorAuthenticatable;
 
-class Admins extends Authenticatable implements FilamentUser
+class Admins extends Authenticatable
 {
     // use HasBlog;
     use TwoFactorAuthenticatable;

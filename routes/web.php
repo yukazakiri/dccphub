@@ -33,6 +33,9 @@ Route::middleware([
     // Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 });
 
+
+
+
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])
     ->middleware(['web', 'guest'])
     ->name('login.verify-email');
