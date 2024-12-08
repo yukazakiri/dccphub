@@ -1,4 +1,4 @@
-import { Link, useForm, Head } from '@inertiajs/react';
+import { Link, useForm, Head, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
@@ -24,7 +24,10 @@ import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 interface PersonInfo {
   first_name: string;
   email?: string;
-  id: string | number;
+  id?: string | number;
+  student_id?: string | number;
+  student_lrn?: string;
+  person_id?: string | number;
 }
 
 export default function Register() {
@@ -46,44 +49,67 @@ export default function Register() {
   async function checkStudentId(id: string) {
     setIsChecking(true);
     try {
-      const response = await axios.post('/api/api/check-student-id', { student_id: id });
-      if (response.data.exists) {
-        setPersonInfo(response.data.person);
-        // Auto-fill the form with the person's information
-        setData({
-          ...data,
-          name: response.data.person.first_name,
-          email: response.data.person.email || '',
-          student_id: id,
-        });
-        toast.success('ID found! Please complete your registration.');
-      }
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('Error checking student ID');
-      }
+      router.post('api/api/check-student-id', { student_id: id }, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: (page) => {
+          const { person, exists } = page.props;
+          if (person) {
+            const personInfo: PersonInfo = {
+              first_name: person.first_name,
+              email: person.email || '',
+              id: person.id || person.student_id || person.student_lrn,
+              person_id: person.id || person.student_id || person.student_lrn,
+            };
+            setPersonInfo(personInfo);
+            // Auto-fill the form with the person's information
+            setData({
+              ...data,
+              name: person.first_name,
+              email: person.email || '',
+              student_id: id,
+            });
+            toast.success('ID found! Please complete your registration.');
+          }
+        },
+        onError: (errors) => {
+          if (errors.student_id) {
+            toast.error(errors.student_id);
+          } else {
+            toast.error('Error checking student ID');
+          }
+          setPersonInfo(null);
+        },
+        onFinish: () => setIsChecking(false),
+      });
+    } catch (error) {
+      toast.error('Error checking student ID');
       setPersonInfo(null);
-    } finally {
       setIsChecking(false);
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    post(route('register'), {
-      onFinish: () => reset('password', 'password_confirmation'),
-      onError: (errors) => {
-        Object.entries(errors).forEach(([key, value]) => {
-          toast.error(value as string);
-        });
-      },
+
+    if (!data.terms && page.props.jetstream.hasTermsAndPrivacyPolicyFeature) {
+      toast.error('You must accept the terms and conditions');
+      return;
+    }
+
+    router.post('/register', data, {
+      preserveScroll: true,
       onSuccess: () => {
         toast.success('Registration successful!', {
           description: 'Redirecting to dashboard...',
         });
       },
+      onError: (errors) => {
+        Object.entries(errors).forEach(([key, value]) => {
+          toast.error(Array.isArray(value) ? value[0] : value as string);
+        });
+      },
+      onFinish: () => reset('password', 'password_confirmation'),
     });
   }
 
@@ -277,7 +303,7 @@ export default function Register() {
 
             <div className="text-center">
               <Link
-                href={route('login')}
+                href='/login'
                 className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
               >
                 Already have an account? Sign in

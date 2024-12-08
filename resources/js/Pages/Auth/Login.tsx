@@ -240,7 +240,7 @@ export default function Login({ canResetPassword, status }: Props) {
 
             <div className="text-center">
               <Link
-                href={route('register')}
+                href='/register'
                 className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
               >
                 Don't have an account? Sign up
