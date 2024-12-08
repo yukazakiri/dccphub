@@ -5,7 +5,7 @@ import React, { PropsWithChildren, useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
 import ApplicationMark from '@/Components/ApplicationMark';
-import Banner from '@/Components/Banner';
+// import { Banner } from '@/Components/Banner';
 import Dropdown from '@/Components/Dropdown';
 import DropdownLink from '@/Components/DropdownLink';
 import NavLink from '@/Components/NavLink';
@@ -31,7 +31,7 @@ export default function AppLayout({
         <Toaster position="top-right" />
         <Head title={title} />
 
-        <Banner />
+        {/* <Banner /> */}
         {children}
 
         {/* Fixed Theme Toggle */}
