@@ -10,6 +10,10 @@
 
     "routes": [
         {
+            "src": "/api/(.*)",
+            "dest": "/api/index.php"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
@@ -21,7 +25,7 @@
         }
     },
     "env": {
-        "APP_NAME": "Laravel",
+        "APP_NAME": "DCCP Hub",
         "APP_ENV": "production",
         "APP_KEY": "base64:HX0+8XPVMV9WsYJRWi3DeqrBVMYC3lKbsA1A2vY8t0o=",
         "APP_DEBUG": "true",
@@ -37,10 +41,10 @@
         "SESSION_DRIVER": "cookie",
         "SSR_TEMP_PATH": "/tmp/ssr",
         "NODE_PATH": "node",
-        "SESSION_DOMAIN": "${VERCEL_URL}",
-        "SESSION_SECURE_COOKIE": "true",
+        "SESSION_DOMAIN": "${SESSION_DOMAIN}",
+        "SESSION_SECURE_COOKIE": "${SESSION_SECURE_COOKIE}",
         "SANCTUM_STATEFUL_DOMAINS": "${SANCTUM_STATEFUL_DOMAINS}",
-        "SESSION_SAME_SITE": "none",
+        "SESSION_SAME_SITE": "${SESSION_SAME_SITE}",
         "DB_CONNECTION": "pgsql",
         "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin"
     }
