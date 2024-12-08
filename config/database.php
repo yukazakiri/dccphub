@@ -2,6 +2,61 @@
 
 use Illuminate\Support\Str;
 
+$database_url = env('DATABASE_URL', '');
+
+// Initialize connection array with environment variables
+$db_connection = [
+    'driver' => 'pgsql',
+    'host' => env('DB_HOST', '127.0.0.1'),
+    'port' => env('DB_PORT', '5432'),
+    'database' => env('DB_DATABASE', 'forge'),
+    'username' => env('DB_USERNAME', 'forge'),
+    'password' => 'krZ8MI5eAyLS',
+    'sslmode' => 'require',
+];
+
+if (!empty($database_url)) {
+    // Transform postgres:// to postgresql:// if needed
+    $database_url = str_replace('postgres://', 'postgresql://', $database_url);
+
+    try {
+        // Parse the URL
+        $parsed = parse_url($database_url);
+
+        if ($parsed !== false) {
+            // Build the connection array from URL parts
+            if (isset($parsed['host'])) {
+                $db_connection['host'] = $parsed['host'];
+            }
+
+            if (isset($parsed['port'])) {
+                $db_connection['port'] = $parsed['port'];
+            }
+
+            if (isset($parsed['user'])) {
+                $db_connection['username'] = $parsed['user'];
+            }
+
+            if (isset($parsed['pass'])) {
+                $db_connection['password'] = 'krZ8MI5eAyLS';
+            }
+
+            if (isset($parsed['path'])) {
+                $db_connection['database'] = ltrim($parsed['path'], '/');
+            }
+
+            // Parse query parameters for SSL mode
+            if (isset($parsed['query'])) {
+                parse_str($parsed['query'], $query_params);
+                $db_connection['sslmode'] = $query_params['sslmode'] ?? 'require';
+            }
+
+
+        }
+    } catch (\Exception $e) {
+        error_log("Database URL parsing error: " . $e->getMessage());
+    }
+}
 return [
 
     /*
@@ -82,20 +137,14 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
+        'pgsql' => array_merge([
+            'charset' => 'utf8',
             'prefix' => '',
+            'postgis' => false,
             'prefix_indexes' => true,
             'search_path' => 'filamentdccpadmin',
-            'sslmode' => 'prefer',
-        ],
+            'schema' => 'public',
+        ], $db_connection),
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
@@ -142,8 +191,7 @@ return [
     */
 
     'redis' => [
-
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client' => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
@@ -152,22 +200,18 @@ return [
 
         'default' => [
             'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'username' => env('REDIS_USERNAME'),
-            'password' => env('REDIS_PASSWORD'),
-            'port' => env('REDIS_PORT', '6379'),
-            'database' => env('REDIS_DB', '0'),
+            'database' => '0',
         ],
 
         'cache' => [
             'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'username' => env('REDIS_USERNAME'),
-            'password' => env('REDIS_PASSWORD'),
-            'port' => env('REDIS_PORT', '6379'),
-            'database' => env('REDIS_CACHE_DB', '1'),
+            'database' => '1',
         ],
 
+        'session' => [
+            'url' => env('REDIS_URL'),
+            'database' => '2',
+        ],
     ],
 
 ];

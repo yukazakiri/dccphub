@@ -46,7 +46,7 @@ export default function Register() {
   async function checkStudentId(id: string) {
     setIsChecking(true);
     try {
-      const response = await axios.post(route('api.check-student-id'), { student_id: id });
+      const response = await axios.post('/api/api/check-student-id', { student_id: id });
       if (response.data.exists) {
         setPersonInfo(response.data.person);
         // Auto-fill the form with the person's information

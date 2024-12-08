@@ -1,4 +1,4 @@
-import { Link, useForm, Head } from '@inertiajs/react';
+import { Link, useForm, Head, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import {
@@ -20,7 +20,7 @@ import { Loader2, ArrowLeft, Mail, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import { router } from '@inertiajs/react'
 interface Props {
   canResetPassword: boolean;
   status: string;
@@ -28,18 +28,20 @@ interface Props {
 
 export default function Login({ canResetPassword, status }: Props) {
   const route = useRoute();
+  const { csrf_token } = usePage().props;
   const [step, setStep] = useState<'email' | 'password'>('email');
   const { data, setData, post, processing, errors, reset } = useForm({
     email: '',
     password: '',
     remember: false,
   });
-
+  const props = usePage().props;
   // Handle email verification
   const handleEmailVerification = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('login.verify-email'), {
-      data: { email: data.email },
+    router.post('/login/verify-email', {
+      email: data.email
+    }, {
       preserveScroll: true,
       onSuccess: () => {
         setStep('password');
@@ -58,7 +60,11 @@ export default function Login({ canResetPassword, status }: Props) {
   // Handle final login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('login'), {
+    router.post('/auth/login', {
+      email: data.email,
+      password: data.password,
+      remember: data.remember,
+    }, {
       onFinish: () => reset('password'),
       onError: (errors) => {
         Object.entries(errors).forEach(([key, value]) => {

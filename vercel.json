@@ -1,50 +1,53 @@
 {
     "version": 2,
+    "framework": null,
     "functions": {
-        "api/*.php": {
-            "runtime": "vercel-php@0.7.3",
-            "memory": 1024,
-            "maxDuration": 10
-        }
+        "api/index.php": { "runtime": "vercel-php@0.7.3" }
     },
-
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/index.php"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        }
-    ],
-    "build": {
-        "env": {
-            "NOW_PHP_DEBUG": "1",
-            "PHP_INI_SCAN_DIR": "/var/task/api"
-        }
+    "github": {
+        "enabled": false
     },
+    "routes": [{
+        "src": "/(.*)",
+        "dest": "/api/index.php"
+    }],
     "env": {
         "APP_NAME": "DCCP Hub",
         "APP_ENV": "production",
-        "APP_KEY": "base64:HX0+8XPVMV9WsYJRWi3DeqrBVMYC3lKbsA1A2vY8t0o=",
+        "APP_KEY": "base64:xrw0KfDcu+1jQC99k9uHLl1AGrevqbcR+KR3pMNcVK4=",
         "APP_DEBUG": "true",
-        "APP_URL": "https://${VERCEL_URL}",
+        "APP_URL": "https://dccphub.vercel.app",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp",
+        "VIEW_COMPILED_PATH": "/tmp/views",
+        "SSR_TEMP_PATH": "/tmp/ssr",
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
-        "SSR_TEMP_PATH": "/tmp/ssr",
-        "NODE_PATH": "node",
-        "SESSION_DOMAIN": "${SESSION_DOMAIN}",
-        "SESSION_SECURE_COOKIE": "${SESSION_SECURE_COOKIE}",
-        "SANCTUM_STATEFUL_DOMAINS": "${SANCTUM_STATEFUL_DOMAINS}",
-        "SESSION_SAME_SITE": "${SESSION_SAME_SITE}",
+        "VIEW_CACHE": "false",
+
+        "LOG_DEPRECATIONS_CHANNEL": "null",
+        "LOG_LEVEL": "debug",
+
+        "BROADCAST_DRIVER": "log",
+        "FILESYSTEM_DISK": "local",
+        "QUEUE_CONNECTION": "sync",
+        "SESSION_LIFETIME": "120",
+
+        "MAIL_MAILER": "smtp",
+        "MAIL_HOST": "mailpit",
+        "MAIL_PORT": "1025",
+        "MAIL_USERNAME": "null",
+        "MAIL_PASSWORD": "null",
+        "MAIL_ENCRYPTION": "null",
+        "MAIL_FROM_ADDRESS": "hello@example.com",
+        "MAIL_FROM_NAME": "Laracel-mailer",
+
+        "REDIS_CLIENT": "predis",
+        "REDIS_URL": "redis://default:0L8FUZDuFEuVo9GucPMQhiIeKKXMzTyL@redis-15987.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:15987",
         "DB_CONNECTION": "pgsql",
         "DATABASE_URL": "postgres://koyeb-adm:${DB_PASSWORD}@ep-calm-boat-a1i25ld3.ap-southeast-1.pg.koyeb.app/filamentdccpadmin"
     }

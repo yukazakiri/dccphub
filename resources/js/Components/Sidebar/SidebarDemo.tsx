@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
 import { ThemeToggle } from '@/Components/ThemeToggle';
 import logo from '../../../../public/android-chrome-512x512.png';
+import { LogoutDialog } from "@/Components/LogoutDialog";
 import {
   RiDashboardLine,
   RiBookOpenLine,
@@ -37,25 +38,28 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
   const route = useRoute();
   const page = useTypedPage();
 
+  const logouthandler = () => {
+    router.post(route('logout'));
+  };
   const links: SidebarLink[] = [
     {
       label: "Dashboard",
-      href: route('dashboard'),
+      href: '/dashboard',
       icon: Icons.Dashboard,
     },
     {
       label: "Courses",
-      href: route('courses.index'),
+      href: '/courses',
       icon: Icons.Book,
     },
     {
       label: "Schedule",
-      href: route('schedule.index'),
+      href: '/schedule',
       icon: Icons.Calendar,
     },
     {
       label: "Grades",
-      href: route('grades.index'),
+      href: '/grades',
       icon: Icons.Graduation,
     },
     {
@@ -65,7 +69,7 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
     },
     {
       label: "Settings",
-      href: route('profile.show'),
+      href: '/user/profile',
       icon: Icons.Settings,
     },
   ];
@@ -124,15 +128,14 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
                     Profile Settings
                   </Link>
                   {/* <ThemeToggle className="flex items-center w-full gap-2 px-3 py-2 text-sm transition-colors rounded-md text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800" /> */}
-                  <Link
-                    href={route('logout')}
-                    method="post"
-                    as="button"
-                    className="flex items-center w-full gap-2 px-3 py-2 text-sm text-red-600 transition-colors rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    <Icons.Logout className="w-4 h-4" />
-                    Sign Out
-                  </Link>
+                  <LogoutDialog>
+  <button
+    className="flex items-center w-full gap-2 px-3 py-2 text-sm text-red-600 transition-colors rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+  >
+    <Icons.Logout className="w-4 h-4" />
+    Sign Out
+  </button>
+</LogoutDialog>
                 </div>
               </div>
             ) : (
@@ -150,14 +153,13 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
                   />
                   <span className="absolute w-3 h-3 border-2 border-white rounded-full -top-1 -right-1 bg-primary dark:border-neutral-800" />
                 </button>
-                <Link
-                  href={route('logout')}
-                  method="post"
-                  as="button"
-                  className="p-2 text-red-600 transition-colors rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
-                >
-                  <Icons.Logout className="w-4 h-4" />
-                </Link>
+                <LogoutDialog>
+  <button
+    className="p-2 text-red-600 transition-colors rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+  >
+    <Icons.Logout className="w-4 h-4" />
+  </button>
+</LogoutDialog>
               </div>
             )}
           </div>

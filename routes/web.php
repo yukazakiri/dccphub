@@ -10,6 +10,8 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\ProfileController;
 
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -32,7 +34,9 @@ Route::middleware([
 });
 
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])
-    ->middleware(['guest'])
+    ->middleware(['web', 'guest'])
     ->name('login.verify-email');
 
+Route::post('/auth/login', [AuthenticatedSessionController::class, 'store'])->name('auth.login');
+Route::post('/auth/logout', [AuthenticatedSessionController::class, 'destroy'])->name('auth.logout');
 require __DIR__.'/jetstream.php';

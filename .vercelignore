@@ -9,4 +9,6 @@
 .idea
 .vscode
 *.sublime-*
-.DS_Store 
+.DS_Store
+- public/storage
+- storage/*.key
