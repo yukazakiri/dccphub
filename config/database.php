@@ -11,7 +11,7 @@ $db_connection = [
     'port' => env('DB_PORT', '5432'),
     'database' => env('DB_DATABASE', 'forge'),
     'username' => env('DB_USERNAME', 'forge'),
-    'password' => 'krZ8MI5eAyLS',
+    'password' => env('DB_PASSWORD'),
     'sslmode' => 'require',
 ];
 
@@ -38,20 +38,26 @@ if (!empty($database_url)) {
             }
 
             if (isset($parsed['pass'])) {
-                $db_connection['password'] = 'krZ8MI5eAyLS';
+                $db_connection['password'] = $parsed['pass'];
             }
 
             if (isset($parsed['path'])) {
                 $db_connection['database'] = ltrim($parsed['path'], '/');
             }
 
-            // Parse query parameters for SSL mode
+            // Parse query parameters for SSL mode and endpoint
             if (isset($parsed['query'])) {
                 parse_str($parsed['query'], $query_params);
                 $db_connection['sslmode'] = $query_params['sslmode'] ?? 'require';
+                
+                // Add endpoint option if present
+                if (isset($query_params['options'])) {
+                    parse_str(urldecode($query_params['options']), $options);
+                    if (isset($options['endpoint'])) {
+                        $db_connection['options'] = "endpoint={$options['endpoint']}";
+                    }
+                }
             }
-
-
         }
     } catch (\Exception $e) {
         error_log("Database URL parsing error: " . $e->getMessage());
@@ -76,7 +82,7 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Database Connections
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------ --------------
     |
     | Below are all of the database connections defined for your application.
     | An example configuration is provided for each database system which
@@ -142,7 +148,7 @@ return [
             'prefix' => '',
             'postgis' => false,
             'prefix_indexes' => true,
-            'search_path' => 'filamentdccpadmin',
+            'search_path' => 'public',
             'schema' => 'public',
         ], $db_connection),
 

@@ -122,5 +122,18 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'private-beta' => [
+        /*
+        | When `true`, the app can't be browsed without an access code!
+        */
+        'enabled' => env('PRIVATE_BETA_ENABLED', false),
+
+        /*
+        | Comma separated IP list for exclude the access code required when Private Beta is `enabled`.
+        | You can put here YOUR IP.
+        */
+        'whitelist_ips' => env('PRIVATE_BETA_WHITELIST_IPS', ''),
+    ],
+
 
 ];

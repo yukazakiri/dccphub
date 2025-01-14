@@ -68,7 +68,7 @@ export default function Dashboard({
       value: academic_info ? `${academic_info.semester} Semester` : 'N/A',
       icon: Icons.Calendar,
       description: academic_info ? academic_info.school_year : 'N/A',
-      change: `${academic_info.course} - ${academic_info.year_standing}`,
+      change: academic_info ? `${academic_info.course} - ${academic_info.year_standing}` : 'N/A',
       changeType: "neutral" as const
     },
     {
@@ -89,11 +89,15 @@ export default function Dashboard({
     },
     {
       title: "Balance",
-      value: financial?.current_tuition ? `₱${financial.current_tuition.balance.toLocaleString()}` : '₱0',
+      value: financial?.current_tuition?.balance 
+        ? `₱${financial.current_tuition.balance.toLocaleString()}`
+        : '₱0',
       icon: Icons.Money,
       description: "Remaining balance",
       change: financial?.current_tuition?.payment_method || 'Not set',
-      changeType: financial?.current_tuition?.balance > 0 ? "negative" : "positive"
+      changeType: financial?.current_tuition?.balance ? 
+        (financial.current_tuition.balance > 0 ? "negative" : "positive") 
+        : "neutral"
     }
   ];
 

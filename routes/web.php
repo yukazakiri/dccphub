@@ -9,9 +9,23 @@ use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PrivateBetaController;
 
 require __DIR__.'/socialstream.php';
 
+// Private Beta Routes
+Route::name('private-beta.')->group(function () {
+    Route::get('/private-beta', [PrivateBetaController::class, 'index'])->name('index');
+    Route::post('/private-beta/access', [PrivateBetaController::class, 'access'])->name('access');
+});
+
+// Registration route with beta code
+Route::get('/register', function () {
+    $code = request()->query('code');
+    return Inertia::render('Auth/Register', [
+        'betaCode' => $code
+    ]);
+})->name('register');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -31,11 +45,7 @@ Route::middleware([
     Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
     Route::get('/grades', [GradesController::class, 'index'])->name('grades.index');
-    // Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 });
-
-
-
 
 Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'verifyEmail'])
     ->middleware(['web', 'guest'])
@@ -43,4 +53,5 @@ Route::post('/login/verify-email', [AuthenticatedSessionController::class, 'veri
 
 Route::post('/auth/login', [AuthenticatedSessionController::class, 'store'])->name('auth.login');
 Route::post('/auth/logout', [AuthenticatedSessionController::class, 'destroy'])->name('auth.logout');
+
 require __DIR__.'/jetstream.php';

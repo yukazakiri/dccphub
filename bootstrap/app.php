@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('web', [
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\PrivateBetaMiddleware::class,
         ]);
         $middleware->group('api', [
             // \App\Http\Middleware\ForceJsonResponse::class,

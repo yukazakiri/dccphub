@@ -1,5 +1,5 @@
 import { Link, useForm, Head, router } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
 import {
@@ -9,17 +9,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Toaster } from "@/components/ui/sonner";
+} from "@/Components/ui/card";
+import { Label } from "@/Components/ui/label";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Checkbox } from "@/Components/ui/checkbox";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Loader2, User, Mail, Lock, KeyRound } from "lucide-react";
 import axios from 'axios';
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
+
+interface Props {
+  betaCode?: string;
+}
 
 interface PersonInfo {
   first_name: string;
@@ -30,7 +34,7 @@ interface PersonInfo {
   person_id?: string | number;
 }
 
-export default function Register() {
+export default function Register({ betaCode }: Props) {
   const page = useTypedPage();
   const route = useRoute();
   const [personInfo, setPersonInfo] = useState<PersonInfo | null>(null);
@@ -43,48 +47,48 @@ export default function Register() {
     password_confirmation: '',
     student_id: '',
     terms: false,
+    beta_code: betaCode || '',
   });
+
+  // Preserve beta code when component mounts
+  useEffect(() => {
+    if (betaCode) {
+      setData('beta_code', betaCode);
+    }
+  }, [betaCode]);
 
   // Add function to check student ID
   async function checkStudentId(id: string) {
     setIsChecking(true);
     try {
-      router.post('api/api/check-student-id', { student_id: id }, {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: (page) => {
-          const { person, exists } = page.props;
-          if (person) {
-            const personInfo: PersonInfo = {
-              first_name: person.first_name,
-              email: person.email || '',
-              id: person.id || person.student_id || person.student_lrn,
-              person_id: person.id || person.student_id || person.student_lrn,
-            };
-            setPersonInfo(personInfo);
-            // Auto-fill the form with the person's information
-            setData({
-              ...data,
-              name: person.first_name,
-              email: person.email || '',
-              student_id: id,
-            });
-            toast.success('ID found! Please complete your registration.');
-          }
-        },
-        onError: (errors) => {
-          if (errors.student_id) {
-            toast.error(errors.student_id);
-          } else {
-            toast.error('Error checking student ID');
-          }
-          setPersonInfo(null);
-        },
-        onFinish: () => setIsChecking(false),
+      const response = await axios.post('/api/check-student-id', { 
+        student_id: id,
+        beta_code: data.beta_code // Include beta code in verification request
       });
-    } catch (error) {
-      toast.error('Error checking student ID');
+
+      const { person, exists } = response.data;
+      if (person) {
+        const personInfo: PersonInfo = {
+          first_name: person.first_name,
+          email: person.email || '',
+          id: person.id || person.student_id || person.student_lrn,
+          person_id: person.id || person.student_id || person.student_lrn,
+        };
+        setPersonInfo(personInfo);
+        // Auto-fill the form with the person's information
+        setData(prev => ({
+          ...prev,
+          name: person.first_name,
+          email: person.email || '',
+          student_id: id,
+        }));
+        toast.success('ID found! Please complete your registration.');
+      }
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Error checking student ID';
+      toast.error(message);
       setPersonInfo(null);
+    } finally {
       setIsChecking(false);
     }
   }
@@ -97,7 +101,7 @@ export default function Register() {
       return;
     }
 
-    router.post('/register', data, {
+    post('/register', {
       preserveScroll: true,
       onSuccess: () => {
         toast.success('Registration successful!', {
@@ -112,6 +116,13 @@ export default function Register() {
       onFinish: () => reset('password', 'password_confirmation'),
     });
   }
+
+  // If no beta code is present, redirect to home
+  useEffect(() => {
+    if (!betaCode) {
+      window.location.href = '/';
+    }
+  }, [betaCode]);
 
   return (
     <AuthenticationLayout title="Register">
@@ -166,6 +177,13 @@ export default function Register() {
 
             {personInfo && (
               <>
+                {/* Hidden Beta Code Input */}
+                <Input
+                  type="hidden"
+                  name="beta_code"
+                  value={data.beta_code}
+                />
+
                 {/* Name Input - Auto-filled and readonly */}
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>

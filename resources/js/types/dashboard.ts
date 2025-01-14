@@ -30,8 +30,17 @@ export interface ClassSchedule {
 }
 
 export interface Schedule {
-  today_classes: ClassSchedule[];
-  next_class: ClassSchedule | null;
+  next_class?: {
+    subject: string;
+    time: string;
+    room: string;
+  };
+  today?: Array<{
+    subject: string;
+    time: string;
+    room: string;
+    status: 'pending' | 'completed';
+  }>;
 }
 
 export interface Tuition {
@@ -40,12 +49,48 @@ export interface Tuition {
   payment_method: string;
 }
 
+export interface AcademicInfo {
+  semester: string;
+  school_year: string;
+  course: string;
+  year_standing: string;
+}
+
+export interface Financial {
+  current_tuition?: {
+    balance: number;
+    payment_method: string;
+  };
+}
+
+export interface CurrentEnrollment {
+  SubjectsEnrolled?: Array<any>;
+}
+
+export interface Post {
+  title: string;
+  content: string;
+  created_at: string;
+  user: {
+    name: string;
+  };
+  class: {
+    name: string;
+  };
+}
+
 export interface DashboardProps {
-  auth: Auth;
-  enrollments: Enrollment;
-  schedule: Schedule;
-  tuition: Tuition;
-  notifications?: Notification[];
+  auth: {
+    user: {
+      name: string;
+      person_id: string;
+    };
+  };
+  current_enrollment?: CurrentEnrollment;
+  schedule?: Schedule;
+  academic_info?: AcademicInfo;
+  financial?: Financial;
+  recent_posts?: Array<Post>;
 }
 
 export interface Notification {
