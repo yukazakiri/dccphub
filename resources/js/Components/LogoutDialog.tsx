@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+} from "@/Components/ui/dialog"
+import { Button } from "@/Components/ui/button"
 import { router } from '@inertiajs/react'
 
 interface LogoutDialogProps {
