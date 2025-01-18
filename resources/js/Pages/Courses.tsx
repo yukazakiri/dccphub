@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { SidebarDemo } from '@/Components/Sidebar/SidebarDemo';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/Components/ui/card';
 import React from 'react';
 import { motion } from 'framer-motion';
 import { RiBookOpenLine, RiCalendarLine, RiGraduationCapLine } from 'react-icons/ri';

@@ -1,10 +1,10 @@
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/Components/ui/button';
 import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
 import { Navbar } from '@/Components/Navbar';
 import { toast } from 'sonner';
 import { BookOpen, Users2, Trophy, Rocket, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -13,8 +13,6 @@ import { BetaSignupDialog } from '@/Components/BetaSignupDialog';
 interface Props {
   canLogin: boolean;
   canRegister: boolean;
-  laravelVersion: string;
-  phpVersion: string;
 }
 
 export default function Welcome({

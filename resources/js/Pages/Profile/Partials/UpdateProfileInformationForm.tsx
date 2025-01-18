@@ -4,12 +4,12 @@ import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import useRoute from '@/Hooks/useRoute';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/Components/ui/card";
+import { Label } from "@/Components/ui/label";
+import { Input } from "@/Components/ui/input";
+import { Button } from "@/Components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
+import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { User } from '@/types';
 import useTypedPage from '@/Hooks/useTypedPage';
 
