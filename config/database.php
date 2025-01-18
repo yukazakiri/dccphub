@@ -12,7 +12,7 @@ $db_connection = [
     'database' => env('DB_DATABASE', 'forge'),
     'username' => env('DB_USERNAME', 'forge'),
     'password' => env('DB_PASSWORD'),
-    'sslmode' => 'require',
+    'sslmode' => 'prefer',
 ];
 
 if (!empty($database_url)) {

@@ -20,12 +20,14 @@ Route::name('private-beta.')->group(function () {
 });
 
 // Registration route with beta code
-Route::get('/register', function () {
-    $code = request()->query('code');
-    return Inertia::render('Auth/Register', [
-        'betaCode' => $code
-    ]);
-})->name('register');
+Route::middleware(['private.beta'])->group(function () {
+    Route::get('/register', function () {
+        $code = request()->query('code');
+        return Inertia::render('Auth/Register', [
+            'betaCode' => $code
+        ]);
+    })->name('register');
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -34,7 +36,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::middleware([
     'auth:sanctum',
