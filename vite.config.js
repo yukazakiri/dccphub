@@ -5,9 +5,16 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
     logLevel: 'info',
+    clearScreen: false,
     build: {
         minify: false,
         sourcemap: true,
+        rollupOptions: {
+            onwarn(warning, warn) {
+                console.log('BUILD WARNING:', warning);
+                warn(warning);
+            }
+        }
     },
     plugins: [
         laravel({
