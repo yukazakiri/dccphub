@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+} from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
+import { Progress } from "@/Components/ui/progress";
 import { SidebarDemo } from '@/Components/Sidebar/SidebarDemo';
 import { Head } from '@inertiajs/react';
 import {
