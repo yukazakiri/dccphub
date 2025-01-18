@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/Components/ThemeToggle';
 import { ThemeProvider } from '@/Components/ThemeProvider';
 import logo from '../../../public/android-chrome-512x512.png';
 import { GraduationCap, BookOpen, Calendar, Users } from 'lucide-react';
+import { Footer } from '@/Components/Footer';
 
 interface Props {
   children: React.ReactNode;
@@ -89,7 +90,7 @@ export default function AuthenticationLayout({ children, title }: Props) {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="flex min-h-screen bg-background">
+      <div className="flex min-h-screen ">
         <Toaster position="top-right" />
 
         {/* Theme Toggle */}
@@ -116,7 +117,7 @@ export default function AuthenticationLayout({ children, title }: Props) {
                 transition={{ delay: 0.2 }}
                 className="text-2xl font-bold text-primary"
               >
-                School Portal
+                DCCP Hub
               </motion.h1>
             </div>
 
@@ -153,9 +154,7 @@ export default function AuthenticationLayout({ children, title }: Props) {
             </motion.div>
 
             {/* Footer */}
-            <div className="text-sm text-muted-foreground">
-              {new Date().getFullYear()} School Portal. All rights reserved.
-            </div>
+            <Footer />
           </div>
 
           {/* Decorative Background Pattern */}

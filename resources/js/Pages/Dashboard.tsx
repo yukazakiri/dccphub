@@ -109,7 +109,7 @@ export default function Dashboard({
       <div className="relative h-screen bg-background">
       <Head title="Dashboard" />
         <SidebarDemo>
-          <div className="flex flex-col flex-1 w-full h-full gap-4 p-2 bg-white border md:p-10 rounded-tl-2xl border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900">
+          <div className="flex flex-col flex-1 w-full h-full gap-4 p-2 bg-background border md:p-10 rounded-tl-2xl border-neutral-200 dark:border-neutral-700">
             <motion.div className="flex items-center justify-between">
               <motion.h2
                 initial={{ opacity: 0, y: -20 }}

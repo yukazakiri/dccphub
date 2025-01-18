@@ -35,7 +35,7 @@ export default function AppLayout({
         {children}
 
         {/* Fixed Theme Toggle */}
-        <div className="fixed z-50 bottom-4 right-4">
+        <div className="absolute z-50 bottom-4 right-4 bg-background/50 backdrop-blur-sm rounded-full p-2">
           <ThemeToggle />
         </div>
       </div>
