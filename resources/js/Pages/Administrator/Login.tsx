@@ -6,12 +6,12 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Loader2, ShieldAlert, Mail, Lock } from "lucide-react";
