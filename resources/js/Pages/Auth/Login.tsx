@@ -8,16 +8,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Loader2, ArrowLeft, Mail, Lock } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/Components/ui/checkbox";
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { router } from '@inertiajs/react'
@@ -70,7 +70,7 @@ export default function Login({
           description: 'Please enter your password to continue',
         });
       },
-      onError: (errors) => {
+      onError: (errors: any) => {
         toast.error(errors.email as string || 'Invalid email');
         const emailInput = document.getElementById('email');
         emailInput?.focus();

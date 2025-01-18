@@ -8,15 +8,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Loader2, Shield, Key } from "lucide-react";
-import { motion } from "framer-motion";
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 
 export default function TwoFactorChallenge() {
@@ -48,7 +47,7 @@ export default function TwoFactorChallenge() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     form.post(route('two-factor.login'), {
-      onError: (errors) => {
+      onError: (errors: any) => {
         Object.entries(errors).forEach(([key, value]) => {
           toast.error(value as string);
         });

@@ -1,4 +1,4 @@
-import { Link, useForm, Head } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import React from 'react';
 import useRoute from '@/Hooks/useRoute';
 import {
@@ -8,9 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
+} from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { Loader2, Mail, UserCircle, LogOut } from "lucide-react";
 import { motion } from "framer-motion";

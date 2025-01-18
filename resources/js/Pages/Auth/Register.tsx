@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/Components/ui/card";
-import { Label } from "@/Components/ui/label";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Checkbox } from "@/Components/ui/checkbox";
@@ -108,7 +108,7 @@ export default function Register({ betaCode }: Props) {
           description: 'Redirecting to dashboard...',
         });
       },
-      onError: (errors) => {
+      onError: (errors: any) => {
         Object.entries(errors).forEach(([key, value]) => {
           toast.error(Array.isArray(value) ? value[0] : value as string);
         });
