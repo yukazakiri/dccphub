@@ -20,6 +20,26 @@ class DashboardController extends Controller
         $settings = GeneralSettings::first();
 
         $data = [
+            // Student Information
+            'student_info' => [
+                'id' => $student->id,
+                'course' => [
+                    'code' => $student->course->code,
+                    'title' => $student->course->title,
+                ],
+                'academic_year' => $student->academic_year,
+                'status' => $student->status,
+                'clearance_status' => $student->clearance_status,
+                'personal_info' => [
+                    'first_name' => $student->first_name,
+                    'last_name' => $student->last_name,
+                    'middle_name' => $student->middle_name,
+                    'email' => $student->email,
+                    'gender' => $student->gender,
+                    'birth_date' => $student->birth_date,
+                ],
+            ],
+
             // Current Enrollment Status
             'current_enrollment' => StudentEnrollment::with(['SubjectsEnrolled.subject'])
                 ->where('student_id', $student->id)

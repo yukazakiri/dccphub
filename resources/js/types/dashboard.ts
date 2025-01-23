@@ -86,11 +86,69 @@ export interface DashboardProps {
       person_id: string;
     };
   };
-  current_enrollment?: CurrentEnrollment;
-  schedule?: Schedule;
-  academic_info?: AcademicInfo;
-  financial?: Financial;
-  recent_posts?: Array<Post>;
+  current_enrollment?: {
+    SubjectsEnrolled?: Array<{
+      subject: {
+        title: string;
+        code: string;
+      };
+    }>;
+  };
+  schedule?: {
+    today: Array<{
+      subject: string;
+      time: string;
+      room: string;
+      status: 'ongoing' | 'upcoming' | 'completed';
+    }>;
+    next_class?: {
+      subject: string;
+      time: string;
+      room: string;
+    };
+  };
+  academic_info?: {
+    course: string;
+    year_standing: string;
+    semester: string;
+    school_year: string;
+  };
+  financial?: {
+    current_tuition?: {
+      balance: number;
+      payment_method?: string;
+    };
+    has_clearance?: boolean;
+  };
+  recent_posts?: Array<{
+    title: string;
+    content: string;
+    created_at: string;
+    user: {
+      name: string;
+    };
+    class: {
+      name: string;
+    };
+  }>;
+  student_info?: {
+    id: number;
+    course: {
+      code: string;
+      title: string;
+    };
+    academic_year: string;
+    status: string;
+    clearance_status: boolean;
+    personal_info: {
+      first_name: string;
+      last_name: string;
+      middle_name: string;
+      email: string;
+      gender: string;
+      birth_date: string;
+    };
+  };
 }
 
 export interface Notification {
